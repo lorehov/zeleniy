@@ -26,10 +26,7 @@ func (s *ProjectService) GetProjectById(id bson.ObjectId) (Project, error) {
 	p := Project{}
 	err := s.coll().FindId(id).One(&p)
 	if err != nil {
-		if err == mgo.ErrNotFound {
-			return p, err
-		}
-		return p, errors.Wrapf(err, "while retriving project with id %v", id)
+		return p, checkErrNotFound(err, "while retriving project with id " + id)
 	}
 	return p, nil
 }
@@ -38,10 +35,7 @@ func (s *ProjectService) GetProjectById(id bson.ObjectId) (Project, error) {
 func (s *ProjectService) DeleteProject(id bson.ObjectId) error {
 	err := s.coll().RemoveId(id)
 	if err != nil {
-		if err == mgo.ErrNotFound {
-			return err
-		}
-		return errors.Wrapf(err, "")
+		return checkErrNotFound(err, "")
 	}
 	return nil
 }
@@ -56,6 +50,16 @@ func (s *ProjectService) CreateOrUpdateProject(p Project) (bson.ObjectId, error)
 		return "", errors.Wrapf(err, "error while inserting/updating project %v", p)
 	}
 	return p.ID, nil
+}
+
+
+func (s *ProjectService) GetProjectsList() ([]Project, error) {
+	projects := []Project{}
+	err := s.coll().Find(nil).All(projects)
+	if err != nil {
+		return projects, checkErrNotFound(err, "")
+	}
+	return projects, nil
 }
 
 
