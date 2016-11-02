@@ -57,7 +57,7 @@ func TestProjectService(t *testing.T) {
 	t.Run("CreateOrUpdateProject", func(t *testing.T) {
 		t.Run("Should create project if no ID provided", func(t *testing.T) {
 			newProj := Project{Title: "foo"}
-			id, err := ps.CreateOrUpdateProject(newProj)
+			id, err := ps.CreateOrUpdateProject(&newProj)
 			if err != nil {
 				t.Errorf("Error should be nil, but %+v", err)
 			}
@@ -72,7 +72,7 @@ func TestProjectService(t *testing.T) {
 		})
 		t.Run("Should update project if project with given ID exists", func(t *testing.T) {
 			project1.Title = "bar"
-			id, err := ps.CreateOrUpdateProject(project1)
+			id, err := ps.CreateOrUpdateProject(&project1)
 			if err != nil {
 				t.Errorf("Error should be nil, but %+v", err)
 			}

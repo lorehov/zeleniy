@@ -16,9 +16,11 @@ func StartApi(app *zeleniy.Application) {
 	pr.Register(wsContainer)
 	mr := MetricResource{app}
 	mr.Register(wsContainer)
+	cr := ComponentResource{app}
+	cr.Register(wsContainer)
 
 	config := swagger.Config{
-		WebServices:    wsContainer.RegisteredWebServices(), // you control what services are visible
+		WebServices:    wsContainer.RegisteredWebServices(),
 		WebServicesUrl: "http://localhost:8080",
 		ApiPath:        "/apidocs.json",
 
