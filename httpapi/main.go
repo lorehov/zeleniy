@@ -20,8 +20,8 @@ func StartApi(app *zeleniy.Application) {
 		ApiPath:        "/apidocs.json",
 
 		// Optionally, specifiy where the UI is located
-		SwaggerPath:     "/apidocs/",
-		SwaggerFilePath: "/Users/emicklei/xProjects/swagger-ui/dist"}
+		SwaggerPath:     "/apidocs/",}
+		//SwaggerFilePath: "/Users/emicklei/xProjects/swagger-ui/dist"}
 	swagger.RegisterSwaggerService(config, wsContainer)
 
 	server := &http.Server{Addr: ":8080", Handler: wsContainer}

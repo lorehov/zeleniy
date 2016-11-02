@@ -19,7 +19,7 @@ func ObjectId(id string) (bson.ObjectId, error) {
 
 func checkErrNotFound(err error, msg string) error {
 	if err == mgo.ErrNotFound {
-		return nil, err
+		return err
 	}
-	return nil, errors.Wrapf(err, msg)
+	return errors.Wrapf(err, msg)
 }
