@@ -1,8 +1,8 @@
 package httpapi
 
 import (
-	"github.com/lorehov/zeleniy"
 	"github.com/emicklei/go-restful"
+	"github.com/lorehov/zeleniy"
 	"net/http"
 	"gopkg.in/mgo.v2"
 )
@@ -65,20 +65,20 @@ func (p *ProjectResource) getList(request *restful.Request, response *restful.Re
 
 
 func (p *ProjectResource) getById(request *restful.Request, response *restful.Response) {
-	id := request.PathParameter("user-id")
+	id := request.PathParameter("project-id")
 	projectId, err := zeleniy.ObjectId(id)
 	if err != nil {
-		handleWrongId(response)
+		handle400(response, err)
 		return
 	}
 	projectService := zeleniy.NewProjectService(p.App.Db())
 	project, err := projectService.GetProjectById(projectId)
 	if err != nil {
 		if err == mgo.ErrNotFound {
-			handle404(response, "404: no such project.")
+			handle404(response, err)
 			return
 		} else {
-			handle500(response, "500: internal error.")
+			handle500(response, err)
 			return
 		}
 	}
@@ -87,20 +87,20 @@ func (p *ProjectResource) getById(request *restful.Request, response *restful.Re
 
 
 func (p *ProjectResource) removeById(request *restful.Request, response *restful.Response) {
-	id := request.PathParameter("user-id")
+	id := request.PathParameter("project-id")
 	projectId, err := zeleniy.ObjectId(id)
 	if err != nil {
-		handleWrongId(response)
+		handle400(response, err)
 		return
 	}
 	projectService := zeleniy.NewProjectService(p.App.Db())
 	err = projectService.DeleteProject(projectId)
 	if err != nil {
 		if err == mgo.ErrNotFound {
-			handle404(response, "404: no such project.")
+			handle404(response, err)
 			return
 		} else {
-			handle500(response, "500: internal error.")
+			handle500(response, err)
 			return
 		}
 	}
@@ -142,28 +142,3 @@ func (p *ProjectResource) create(request *restful.Request, response *restful.Res
 	response.WriteHeaderAndEntity(http.StatusCreated, project)
 }
 
-
-func handleWrongId(response *restful.Response) {
-	response.AddHeader("Content-Type", "text/plain")
-	response.WriteErrorString(http.StatusBadRequest, "400: wrong id.")
-}
-
-
-func handle400(response *restful.Response, err error) {
-	response.AddHeader("Content-Type", "text/plain")
-	response.WriteErrorString(http.StatusBadRequest, err.Error())
-
-}
-
-
-func handle404(response *restful.Response, msg string) {
-	response.AddHeader("Content-Type", "text/plain")
-	response.WriteErrorString(http.StatusNotFound, msg)
-
-}
-
-
-func handle500(response *restful.Response, msg string) {
-	response.AddHeader("Content-Type", "text/plain")
-	response.WriteErrorString(http.StatusInternalServerError, msg)
-}

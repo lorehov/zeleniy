@@ -11,8 +11,11 @@ import (
 
 func StartApi(app *zeleniy.Application) {
 	wsContainer := restful.NewContainer()
+
 	pr := ProjectResource{app}
 	pr.Register(wsContainer)
+	mr := MetricResource{app}
+	mr.Register(wsContainer)
 
 	config := swagger.Config{
 		WebServices:    wsContainer.RegisteredWebServices(), // you control what services are visible
